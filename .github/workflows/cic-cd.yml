@@ -31,12 +31,12 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t 599626781401.dkr.ecr.us-east-1.amazonaws.com/my-repo:latest .
+          docker build -t ${{ secrets.ECR_REPO }}/my-repo:latest .
 
       - name: Trivy image scan
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: 599626781401.dkr.ecr.us-east-1.amazonaws.com/my-repo:latest
+          image-ref: ${{ secrets.ECR_REPO }}/my-repo:latest
           format: table
           severity: HIGH,CRITICAL
           ignore-unfixed: true
@@ -45,13 +45,13 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v2 # More information on this action can be found 
         with:
           aws-region: us-east-1
-          role-to-assume: arn:aws:iam::599626781401:role/github-action-role
+          role-to-assume: ${{ SECRETS.AWS_ROLE_ARN }}
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2 
 
       -  name: push imagen to Ecr
-         run: docker push 599626781401.dkr.ecr.us-east-1.amazonaws.com/my-repo:latest
+         run: docker push ${{ secrets.ECR_REPO }}/my-repo:latest
     
        
         
